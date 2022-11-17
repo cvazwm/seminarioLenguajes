@@ -29,7 +29,7 @@ public class Main {
 		}
 		//Opcional
 		try {
-			lstSocios.add(sistema.traerSocio(sistema.agregarSocio(321, "qwe", "wer", 1, 5000)));
+			lstSocios.add(sistema.traerSocio(sistema.agregarSocio(321, "qwe", "wer", 5000)));
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

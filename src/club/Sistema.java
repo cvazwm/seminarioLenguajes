@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public class Sistema {
 	private List<Persona> lstPersonas = new ArrayList<Persona>();
 	private List<Actividad> lstActividades = new ArrayList<Actividad>();
-	private int legajoNuevo;
+	private int legajoNuevo, carnetNuevo;
 	
 	//Constructor
 	public Sistema() {}
@@ -91,6 +91,18 @@ public class Sistema {
 		return socio;
 	}
 	
+	public Socio traerSocioDni(long dni) {
+		Socio socio = null;
+		
+		for(Persona ps : lstPersonas) {
+			if((ps instanceof Socio) && (((Socio) ps).getDni() == dni)) {
+				socio = ((Socio) ps);
+			}
+		}
+		
+		return socio;
+	}
+	
 	public List<Profesor> traerProfesores(){
 		List<Profesor> lstProfesores = new ArrayList<Profesor>();
 		
@@ -138,10 +150,18 @@ public class Sistema {
 		return lstPersonas.add(profesor);
 	}
 	
-	public int agregarSocio(long dni, String nombre, String apellido, int carnet, float cuota)throws Exception {
-		if(traerSocio(carnet) != null)throw new Exception("ERROR: socio ya se encuentra en la lista.");
+	public int agregarSocio(long dni, String nombre, String apellido, float cuota)throws Exception {
+		if(traerSocioDni(dni) != null)throw new Exception("ERROR: socio ya se encuentra en la lista.");
 		
-		Socio socio = new Socio(dni, nombre, apellido, carnet, cuota);
+		for(Persona pp : lstPersonas) {
+			if(pp instanceof Socio) {
+				if ( carnetNuevo < traerSocioDni(pp.getDni()).getCarnet()){
+					carnetNuevo = traerSocioDni(pp.getDni()).getCarnet();
+				};
+			}
+		}
+		carnetNuevo++;
+		Socio socio = new Socio(dni, nombre, apellido, carnetNuevo, cuota);
 		lstPersonas.add(socio);
 		return socio.getCarnet();
 	}
