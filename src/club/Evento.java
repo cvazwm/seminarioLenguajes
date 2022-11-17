@@ -7,6 +7,7 @@ public class Evento extends Actividad {
 	private Persona responsable;
 
 	//Constructor
+	public Evento() {}
 	public Evento(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
 			 Persona responsable) {
 		super(nombre, fecha, horaInicio, horaFin, lugar, arancel);

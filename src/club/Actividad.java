@@ -13,6 +13,7 @@ public abstract class Actividad {
 	protected float arancel;
 	
 	//Constructor
+	public Actividad() {}
 	public Actividad(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar,
 			float arancel) {
 		super();
@@ -77,7 +78,7 @@ public abstract class Actividad {
 	//toString
 	@Override
 	public String toString() {
-		return "ID: " + id + ", NOMBRE: " + nombre + ", FECHA: " + fecha + ", HORA INICIO: " + horaInicio + ", HORA FIN: " + horaFin
+		return "NOMBRE: " + nombre + ", ID: " + id +  ", FECHA: " + fecha + ", HORA INICIO: " + horaInicio + ", HORA FIN: " + horaFin
 				+ ", LUGAR: " + lugar + ", ARANCEL: " + arancel + "\n";
 	}
 	

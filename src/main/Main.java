@@ -17,19 +17,35 @@ public class Main {
 		
 		//carga de datos al sistema
 		try {
-			sistema.agregarProfesor(123123, "asd", "qweqew", 1, 50000);
-			sistema.agregarProfesor(123124, "asdr", "qeqew", 2, 50000);
-			sistema.agregarProfesor(12123, "ad", "qweqqw", 3, 50000);
-			sistema.agregarProfesor(123, "aswd", "qwew", 4, 50000);
+			sistema.agregarProfesor(123123, "Pedro", "Perez", 1, 50000);
+			sistema.agregarProfesor(444444, "Marcos", "Martinez", 2, 50000);
+			sistema.agregarProfesor(123123, "Alicia", "Roca", 3, 50000);
+			sistema.agregarProfesor(333333, "Erica", "Torres", 4, 50000);
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
 		try {
-			sistema.agregarSocio(321, "qwe", "wer", 1, 5000);
-			sistema.agregarSocio(3214, "qwer", "wert", 2, 5000);
-			sistema.agregarSocio(3215, "qwert", "werty", 3, 5000);
-			sistema.agregarSocio(32111, "qwe", "wer", 4, 5000);
+			sistema.agregarSocio(5555, "Leo", "Messi", 1, 5000);
+			sistema.agregarSocio(3214, "Angel", "Di Maria", 2, 5000);
+			sistema.agregarSocio(3215, "Julian", "Alvarez", 3, 5000);
+			sistema.agregarSocio(3211, "Emiliano", "Martinez", 4, 5000);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		try {
+			sistema.agregarDeporte("futbol", LocalDate.of(2022,11,18), LocalTime.of(18, 00), LocalTime.of(19, 00), "cancha 2", 2000, sistema.traerProfesor(1), 4, lstSocios);
+			sistema.agregarDeporte("Tenis", LocalDate.of(2022,11,20), LocalTime.of(15, 00), LocalTime.of(16, 00), "cancha 1", 4000, sistema.traerProfesor(3), 2, lstSocios);
+			sistema.agregarDeporte("Volley", LocalDate.of(2022,11,17), LocalTime.of(10, 00), LocalTime.of(12, 00), "cancha 5", 2000, sistema.traerProfesor(2), 4, lstSocios);
+			sistema.agregarDeporte("Bochas", LocalDate.of(2022,11,22), LocalTime.of(11, 00), LocalTime.of(12, 00), "cancha 3", 1000, sistema.traerProfesor(3), 3, lstSocios);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		try {
+			sistema.agregarEvento("Alquiler de salón", LocalDate.of(2022, 12, 15), LocalTime.of(19, 00), LocalTime.of(02, 00), "Salon pequeño", 30000, sistema.traerSocio(4));
+			sistema.agregarEvento("Alquiler de cancha", LocalDate.of(2022, 12, 02), LocalTime.of(21, 00), LocalTime.of(23, 00), "cancha 2", 3000, sistema.traerSocio(2));
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -43,18 +59,7 @@ public class Main {
 			System.out.println(e.getMessage());
 		}
 		
-		try {
-			sistema.agregarDeporte("a", LocalDate.now(), LocalTime.of(12, 0), LocalTime.of(14, 0), "a", 2000, sistema.traerProfesor(1), 4, lstSocios);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-		try {
-			sistema.agregarEvento("b", LocalDate.now(), LocalTime.of(13, 0), LocalTime.of(15, 0), "b", 1000, sistema.traerSocio(2));
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
+	
 		//carga de datos al archivo txt
 		try {
 			salida.println(sistema.traerProfesores());
@@ -73,6 +78,7 @@ public class Main {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+		
 		salida.close();
 	}
 

@@ -5,6 +5,7 @@ public class Socio extends Persona {
 	private float cuota;
 	
 	//Constructor
+	public Socio() {}
 	public Socio(long dni, String nombre, String apellido, int carnet, float cuota) {
 		super(dni, nombre, apellido);
 		this.carnet = carnet;

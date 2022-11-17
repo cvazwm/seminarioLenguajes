@@ -11,6 +11,7 @@ public class Deporte extends Actividad {
 	private List<Socio> lstSocios = new ArrayList<Socio>();
 	
 	//Constructor
+	public Deporte() {}
 	public Deporte(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
 			 Profesor profesor, int cupo, List<Socio> lstSocios) {
 		super(nombre, fecha, horaInicio, horaFin, lugar, arancel);

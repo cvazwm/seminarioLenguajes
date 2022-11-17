@@ -5,6 +5,7 @@ public class Profesor extends Persona {
 	private float sueldo;
 	
 	//Constructor
+	public Profesor() {}
 	public Profesor(long dni, String nombre, String apellido, int nroLegajo, float sueldo) {
 		super(dni, nombre, apellido);
 		this.nroLegajo = nroLegajo;
