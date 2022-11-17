@@ -12,34 +12,39 @@ public class Deporte extends Actividad {
 	
 	//Constructor
 	public Deporte(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
-			 Profesor profesor, int cupo, List<Socio> lstSocios) {
+			 Profesor profesor, int cupo) {
 		super(nombre, fecha, horaInicio, horaFin, lugar, arancel);
 		this.profesor = profesor;
 		this.cupo = cupo;
-		this.lstSocios = lstSocios;
 	}
 
 	//Getters & Setters
 	public Profesor getProfesor() {
-		return profesor;
+		return this.profesor;
 	}
 	public void setProfesor(Profesor profesor) {
 		this.profesor = profesor;
 	}
 	
 	public int getCupo() {
-		return cupo;
+		return this.cupo;
 	}
 	public void setCupo(int cupo) {
 		this.cupo = cupo;
 	}
 
 	public List<Socio> getLstSocios() {
-		return lstSocios;
+		return this.lstSocios;
 	}
 	public void setLstSocios(List<Socio> lstSocios) {
 		this.lstSocios = lstSocios;
 	}
+	
+	public boolean agregarSocio(Socio socio) {
+		this.lstSocios.add(socio);
+		return true;
+	}
+	
 
 	//toString
 	@Override

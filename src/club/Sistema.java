@@ -8,6 +8,7 @@ import java.time.LocalTime;
 public class Sistema {
 	private List<Persona> lstPersonas = new ArrayList<Persona>();
 	private List<Actividad> lstActividades = new ArrayList<Actividad>();
+	private int legajoNuevo;
 	
 	//Constructor
 	public Sistema() {}
@@ -66,6 +67,17 @@ public class Sistema {
 		
 		return profesor;
 	}
+	public Profesor traerProfesorDni(long dni) {
+		Profesor profesor = null;
+		
+		for(Persona pp : lstPersonas) {
+			if((pp instanceof Profesor) && (((Profesor) pp).getDni() == dni)) {
+				profesor = ((Profesor) pp);
+			}
+		}
+		
+		return profesor;
+	}
 	
 	public Socio traerSocio(int carnet) {
 		Socio socio = null;
@@ -103,20 +115,35 @@ public class Sistema {
 		return lstSocios;
 	}
 	
-	public boolean agregarProfesor(long dni, String nombre, String apellido, int nroLegajo, float sueldo)throws Exception {
-		if(traerProfesor(nroLegajo) != null)throw new Exception("ERROR: profesor ya se encuentra en la lista.");
-		
-		Profesor profesor = new Profesor(dni, nombre, apellido, nroLegajo, sueldo);
-		
+	public boolean agregarSocioDeporte(Socio socio, Deporte actividad)throws Exception {
+		if((actividad.getCupo() + 1) > actividad.getLstSocios().size())throw new Exception("ERROR: No hay cupo disponible para la actividad.");
+
+		return actividad.agregarSocio(socio);
+	}
+
+	public boolean agregarProfesor(long dni, String nombre, String apellido, float sueldo)throws Exception {
+		if(traerProfesorDni(dni) != null)throw new Exception("ERROR: profesor ya se encuentra en la lista.");
+
+		for(Persona pp : lstPersonas) {
+			if(pp instanceof Profesor) {
+				if ( legajoNuevo < traerProfesorDni(pp.getDni()).getNroLegajo()){
+					legajoNuevo = traerProfesorDni(pp.getDni()).getNroLegajo();
+				};
+			}
+		}
+		legajoNuevo++;
+
+		Profesor profesor = new Profesor(dni, nombre, apellido, legajoNuevo, sueldo);
+
 		return lstPersonas.add(profesor);
 	}
 	
-	public boolean agregarSocio(long dni, String nombre, String apellido, int carnet, float cuota)throws Exception {
+	public int agregarSocio(long dni, String nombre, String apellido, int carnet, float cuota)throws Exception {
 		if(traerSocio(carnet) != null)throw new Exception("ERROR: socio ya se encuentra en la lista.");
 		
 		Socio socio = new Socio(dni, nombre, apellido, carnet, cuota);
-		
-		return lstPersonas.add(socio);
+		lstPersonas.add(socio);
+		return socio.getCarnet();
 	}
 	
 	public boolean eliminarPersona(long dni)throws Exception {
@@ -213,12 +240,12 @@ public class Sistema {
 	}
 
 	public boolean agregarDeporte(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, 
-			float arancel, Profesor profesor, int cupo, List<Socio> lstSocios)throws Exception {
+			float arancel, Profesor profesor, int cupo)throws Exception {
 		
 		Actividad actividad = traerActividad(fecha, horaInicio, lugar);
-		if((actividad != null) || (cupo > lstSocios.size()))throw new Exception("ERROR: fecha, horario y lugar reservado o no hay cupo.");
+		if(actividad != null)throw new Exception("ERROR: fecha, horario y lugar reservado.");
 		
-		Deporte deporte = new Deporte(nombre, fecha, horaInicio, horaFin, lugar, arancel, profesor, cupo, lstSocios);
+		Deporte deporte = new Deporte(nombre, fecha, horaInicio, horaFin, lugar, arancel, profesor, cupo);
 		
 		return lstActividades.add(deporte);
 	}
