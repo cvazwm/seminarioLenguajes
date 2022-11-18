@@ -5,7 +5,6 @@ public class Profesor extends Persona {
 	private float sueldo;
 	
 	//Constructor
-	public Profesor() {}
 	public Profesor(long dni, String nombre, String apellido, int nroLegajo, float sueldo) {
 		super(dni, nombre, apellido);
 		this.nroLegajo = nroLegajo;
@@ -29,8 +28,8 @@ public class Profesor extends Persona {
 
 	@Override
 	public String toString() {
-		return "\n ----- Profesor ----- \n LEGAJO: " + nroLegajo + ", SUELDO: " + sueldo + ", DNI: " + dni + ", NOMBRE: " + nombre
-				+ ", APELLIDO: " + apellido + "\n";
+		return "\n LEGAJO: " + nroLegajo + ", SUELDO: " + sueldo + ", DNI: " + dni + ", NOMBRE: " + nombre
+				+ ", APELLIDO: " + apellido;
 	}
 	
 	

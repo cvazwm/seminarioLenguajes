@@ -6,7 +6,6 @@ public abstract class Persona {
 	protected String apellido;
 	
 	//Constructor
-	public Persona() {}
 	public Persona(long dni, String nombre, String apellido) {
 		super();
 		this.dni = dni;

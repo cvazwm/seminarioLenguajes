@@ -5,7 +5,6 @@ public class Socio extends Persona {
 	private float cuota;
 	
 	//Constructor
-	public Socio() {}
 	public Socio(long dni, String nombre, String apellido, int carnet, float cuota) {
 		super(dni, nombre, apellido);
 		this.carnet = carnet;
@@ -30,8 +29,8 @@ public class Socio extends Persona {
 	//toString
 	@Override
 	public String toString() {
-		return "\n ----- SOCIO ----- \n CARNET: " + carnet + ", CUOTA: " + cuota + ", DNI: " + dni + ", NOMBRE: " + nombre
-				+ ", APELLIDO: " + apellido + "\n";
+		return "\n CARNET: " + carnet + ", CUOTA: " + cuota + ", DNI: " + dni + ", NOMBRE: " + nombre
+				+ ", APELLIDO: " + apellido;
 	}
 	
 }
