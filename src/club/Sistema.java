@@ -379,10 +379,22 @@ public class Sistema {
 	//Escritura de base de datos
 	
 	public boolean updateDBPersonas(Profesor profesor)throws Exception {
-		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
 		try {
-			dbClub.println("p,"+profesor.getDni()+","+profesor.getNombre()+","+profesor.getApellido()+","+profesor.getNroLegajo()+","+profesor.getSueldo());
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				inputBuffer.append(l);
+				inputBuffer.append('\n');
+			}
+			inputBuffer.append("p,"+profesor.getDni()+","+profesor.getNombre()+","+profesor.getApellido()+","+profesor.getNroLegajo()+","+profesor.getSueldo()+"\n");
 			dbClub.close();
+			String dbStr = inputBuffer.toString();
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
 			return true;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -552,7 +564,7 @@ public class Sistema {
 		}
 		dbClub.close();
 		dbClub2.close();
-		
+
 		this.flagCargandoDb=false;
 		return true;
 	}
