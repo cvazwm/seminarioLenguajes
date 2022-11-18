@@ -96,20 +96,22 @@ public class Main {
 							if (String.valueOf(identificador).length() == 8 &&  nombreDeporte != null && !nombreDeporte.isEmpty() ){
 								//Es DNI
 								try{
-									if(sistema.agregarSocioDeporte(sistema.traerSocioDni(identificador),sistema.traerDeporte(nombreDeporte)))
-									System.out.println("Socio inscripto con exito a "+ nombreDeporte);
-									else
-									System.out.println("Hubo un problema al inscribir al socio a la actividad");
+									if(sistema.agregarSocioDeporte(sistema.traerSocioDni(identificador),sistema.traerDeporte(nombreDeporte))){
+										System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+									}else{
+										System.out.println("Hubo un problema al inscribir al socio a la actividad");
+									}
 								}catch(Exception e) {
 									System.out.println(e.getMessage());
 								}
 							}else{
 								//Es legajo
 								try{
-									if(sistema.agregarSocioDeporte(sistema.traerSocio(identificador),sistema.traerDeporte(nombreDeporte)))
-									System.out.println("Socio inscripto con exito a "+ nombreDeporte);
-									else
-									System.out.println("Hubo un problema al inscribir al socio a la actividad");
+									if(sistema.agregarSocioDeporte(sistema.traerSocio(identificador),sistema.traerDeporte(nombreDeporte))){
+										System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+									}else{
+										System.out.println("Hubo un problema al inscribir al socio a la actividad");
+									}
 								}catch(Exception e) {
 									System.out.println(e.getMessage());
 								}
@@ -156,13 +158,6 @@ public class Main {
 							inicio = sn.next();
 							System.out.println("Hora finalización de actividad (hh:mm):");
 							fin = sn.next();
-
-							System.out.println(diaDSemana);
-							System.out.println(nombre);
-							System.out.println(lugar);
-							System.out.println(cupo);
-							System.out.println(inicio + " cantidad de campos " + inicio.split(":").length);
-							System.out.println(fin + " cantidad de campos " + fin.split(":").length);
 						}while(
 							diaDSemana>7 || diaDSemana<1 ||
 							nombre==null || nombre.isEmpty() ||
@@ -182,12 +177,13 @@ public class Main {
 								arancel, 
 								sistema.traerProfesorDni(dni), 
 								cupo
-							)) 
+							)){
 							System.out.println("Se agregó la actividad: " + nombre);
-							else
+							}else{
 							//si la actividad no se crea, el profesor recien creado se borra, sino queda huerfano, acumula basura.
 							sistema.eliminarProfesor(sistema.traerProfesorDni(dni).getNroLegajo());
 							System.out.println("Hubo un problema para agregar la actividad");
+							}
 						}catch(Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -231,10 +227,11 @@ public class Main {
 							while (sistema.traerDeporte(nombreDeporte) == null);
 
 							//Sustituyo el profesor
-							if(sistema.reemplazarProfesor(sistema.traerDeporte(nombreDeporte),sistema.traerProfesorDni(dni)))
-							System.out.println("Se actualizó el profesor para " + nombreDeporte);
-							else
-							System.out.println("Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
+							if(sistema.reemplazarProfesor(sistema.traerDeporte(nombreDeporte),sistema.traerProfesorDni(dni))){
+								System.out.println("Se actualizó el profesor para " + nombreDeporte);
+							}else{
+								System.out.println("Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
+							}
 
 						}else{
 							System.out.println("No existe ninguna actividad deportiva, agregar una primero.");
