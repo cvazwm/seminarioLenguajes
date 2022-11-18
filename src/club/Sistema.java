@@ -554,7 +554,7 @@ public class Sistema {
 			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
 			if(v[0].equals("s")){
 				//l[2] contiene el nombre de la supuesta actividad,
-				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Integer.parseInt(v[5]));
+				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Float.parseFloat(v[6]),Integer.parseInt(v[5]));
 				if( v[2] != null && !v[2].equals("") ){
 					agregarSocioDeporte(traerSocioDni(Long.parseLong(v[1])),traerDeporte(v[2]));
 				}
