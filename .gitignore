@@ -1,6 +1,6 @@
 .settings
+club.db
 .vscode
 bin
 .classpath
 .project
-club.db
