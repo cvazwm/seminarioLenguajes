@@ -156,14 +156,21 @@ public class Main {
 							inicio = sn.next();
 							System.out.println("Hora finalización de actividad (hh:mm):");
 							fin = sn.next();
+
+							System.out.println(diaDSemana);
+							System.out.println(nombre);
+							System.out.println(lugar);
+							System.out.println(cupo);
+							System.out.println(inicio + " cantidad de campos " + inicio.split(":").length);
+							System.out.println(fin + " cantidad de campos " + fin.split(":").length);
 						}while(
 							diaDSemana>7 || diaDSemana<1 ||
 							nombre==null || nombre.isEmpty() ||
 							apellido==null || apellido.isEmpty() ||
 							lugar==null || lugar.isEmpty() ||
 							cupo<1 ||
-							inicio.split(":").length==2 ||
-							fin.split(":").length==2
+							inicio.split(":").length!=2 ||
+							fin.split(":").length!=2
 							);
 						try {
 							if(sistema.agregarDeporte(
