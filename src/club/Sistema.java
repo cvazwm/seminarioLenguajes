@@ -1,14 +1,17 @@
 package club;
 
 import java.util.List;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalTime;
+import java.io.*;
 import java.time.DayOfWeek;
 
 public class Sistema {
 	private List<Persona> lstPersonas = new ArrayList<Persona>();
 	private List<Actividad> lstActividades = new ArrayList<Actividad>();
 	private int legajoNuevo, carnetNuevo;
+	private boolean flagCargandoDb=false;
 	
 	//Constructor
 	public Sistema() {}
@@ -132,6 +135,13 @@ public class Sistema {
 		System.out.println(deporte.getLstSocios().size());
 		if(deporte.getCupo() == deporte.getLstSocios().size() + 1 )throw new Exception("ERROR: No hay cupo disponible para la actividad.");
 
+		//Lo mando al archivo si es que no estoy cargando una DB anterior
+		if(this.flagCargandoDb==false){
+			if(!updateDBPersonas(socio, deporte)){
+				System.out.println("Hubo un problema al intentar escribir la base de datos");
+			}
+		}
+
 		return deporte.agregarSocio(socio);
 	}
 
@@ -149,7 +159,19 @@ public class Sistema {
 
 		Profesor profesor = new Profesor(dni, nombre, apellido, legajoNuevo, sueldo);
 
+		//Lo mando al archivo si es que no estoy cargando una DB anterior
+		if(this.flagCargandoDb==false){
+			if(!updateDBPersonas(profesor)){
+				System.out.println("Hubo un problema al intentar escribir la base de datos");
+			}
+		}
 		return lstPersonas.add(profesor);
+	}
+
+	public void agregarProfesor(long dni, String nombre, String apellido, float sueldo, int legajo) {
+		//Exclusivo para la carga de la DB (donde el nro de legajo se debe respetar)
+		Profesor profesor = new Profesor(dni, nombre, apellido, legajo, sueldo);
+		lstPersonas.add(profesor);
 	}
 	
 	public int agregarSocio(long dni, String nombre, String apellido, float cuota)throws Exception {
@@ -164,8 +186,22 @@ public class Sistema {
 		}
 		carnetNuevo++;
 		Socio socio = new Socio(dni, nombre, apellido, carnetNuevo, cuota);
+
+		
+		//Lo mando al archivo si es que no estoy cargando una DB anterior
+		if(this.flagCargandoDb==false){
+			if(!updateDBPersonas(socio)){
+				System.out.println("Hubo un problema al intentar escribir la base de datos");
+			}
+		}
 		lstPersonas.add(socio);
 		return socio.getCarnet();
+	}
+	
+	public void agregarSocio(long dni, String nombre, String apellido, float cuota, int carnet) {
+		//Exclusivo para la carga de la DB (donde el nro de carnet se debe respetar)
+		Socio socio = new Socio(dni, nombre, apellido, carnet, cuota);
+		lstPersonas.add(socio);
 	}
 	
 	public boolean eliminarPersona(long dni)throws Exception {
@@ -307,13 +343,20 @@ public class Sistema {
 	}
 
 	public boolean agregarDeporte(String nombre, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin, String lugar, 
-			float arancel, Profesor profesor, int cupo) {
+			float arancel, Profesor profesor, int cupo) throws Exception {
 		
 		Actividad actividad = traerActividad(dia, horaInicio, lugar);
 		if(actividad != null) return false;
 		
 		Deporte deporte = new Deporte(nombre, dia, horaInicio, horaFin, lugar, arancel, profesor, cupo);
 		
+		//Lo mando al archivo si es que no estoy cargando una DB anterior
+		if(this.flagCargandoDb==false){
+			if(!updateDBActividades(deporte)){
+				System.out.println("Hubo un problema al intentar escribir la base de datos");
+			}
+		}
+
 		return lstActividades.add(deporte);
 	}
 	
@@ -324,8 +367,170 @@ public class Sistema {
 		if(actividad != null)throw new Exception("ERROR: fecha, horario y lugar reservado.");
 		
 		Evento evento = new Evento(nombre, dia, horaInicio, horaFin, lugar, arancel, responsable);
-		
+
+		//Lo mando al archivo si es que no estoy cargando una DB anterior
+		if(this.flagCargandoDb==false){
+			if(!updateDBActividades(evento)){
+				System.out.println("Hubo un problema al intentar escribir la base de datos");
+			}
+		}
+
 		return lstActividades.add(evento);
 	}
+
+	//Escritura de base de datos
 	
+	public boolean updateDBPersonas(Profesor profesor)throws Exception {
+		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
+		try {
+			dbClub.println("p,"+profesor.getDni()+","+profesor.getNombre()+","+profesor.getApellido()+","+profesor.getNroLegajo()+","+profesor.getSueldo());
+			dbClub.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
+	public boolean updateDBPersonas(Socio socio)throws Exception {
+		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
+		try {
+			dbClub.println("s,"+socio.getDni()+",\"\","+socio.getNombre()+","+socio.getApellido()+","+socio.getCarnet()+","+socio.getCuota());
+			dbClub.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
+	public boolean updateDBPersonas(Socio socio, Deporte deporte)throws Exception {
+		try {
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				inputBuffer.append(l);
+				inputBuffer.append('\n');
+			}
+			dbClub.close();
+			String dbStr = inputBuffer.toString();
+			dbStr = dbStr.replace("s,"+socio.getDni()+",\"\",", "s,"+socio.getDni()+","+ deporte.getNombre() +",");
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
+	public boolean updateDBActividades(Deporte deporte)throws Exception {
+		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
+		try {
+			dbClub.println("d,"+deporte.getNombre()+","+deporte.getDia()+","+deporte.getHoraInicio()+","+deporte.getHoraFin()+","+deporte.getLugar()+","+deporte.getArancel()+","+deporte.getProfesor().getNroLegajo()+","+deporte.getCupo());
+			dbClub.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
+	public boolean updateDBActividades(Evento evento)throws Exception {
+		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
+		try {
+			dbClub.println("e,"+evento.getNombre()+","+evento.getDia()+","+evento.getHoraInicio()+","+evento.getHoraFin()+","+evento.getLugar()+","+evento.getArancel()+","+evento.getResponsable());
+			dbClub.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
+	//Lectura de base de datos
+
+	public boolean leerDB() throws Exception {
+		this.flagCargandoDb=true;
+		Scanner dbClub = new Scanner("club.db");
+		Scanner dbClub2 = new Scanner("club.db");
+		String[] l,l2;
+		//leo linea por linea el archivo cargo solo socios
+		while(dbClub.hasNext()){
+			//separo quitando las ,
+			l = dbClub.nextLine().split(",");
+			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
+			if(l[0].equals("s")){
+				//l[2] contiene el nombre de la supuesta actividad,
+				agregarSocio(Long.parseLong(l[1]), l[3], l[4], Integer.parseInt(l[5]));
+				if(l[2] != null && !l[2].isEmpty()){
+					agregarSocioDeporte(traerSocioDni(Long.parseLong(l[1])),traerDeporte(l[2]));
+				}
+			}
+		}
+		
+		//leo linea por linea el archivo cargo profesor y actividad deportiva
+		while(dbClub.hasNext()){
+			//separo quitando las ,
+			l = dbClub.nextLine().split(",");
+			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
+			if(l[0].equals("d")){
+				
+				while(dbClub2.hasNext()){
+					l2 = dbClub2.nextLine().split(",");
+					//si es un profesor y coinciden ambos legajos con la actividad, cargo el profesor, y luego busco el objeto profesor.
+					if(l2[0].equals("p") && Integer.parseInt(l2[4]) == Integer.parseInt(l[7])){
+						agregarProfesor(Long.parseLong(l2[1]), l2[2], l2[3], Float.parseFloat(l2[5]), Integer.parseInt(l2[4]));
+					}
+				}
+
+				agregarDeporte(
+					l[1],
+					DayOfWeek.of(Integer.parseInt(l[2])),
+					LocalTime.of(Integer.parseInt(l[3].split(":")[0]), Integer.parseInt( l[3].split(":")[1] )), 
+					LocalTime.of(Integer.parseInt(l[4].split(":")[0]), Integer.parseInt( l[4].split(":")[1] )),
+					l[5], 
+					Float.parseFloat(l[6]),
+					traerProfesor(Integer.parseInt(l[7])), 
+					Integer.parseInt(l[8])
+				);
+			}
+		}
+
+			// switch (linea[0]) {
+			// 	case "p":
+					
+			// 		break;
+			// 	case "s":
+				
+			// 		break;
+			// 	case "d":
+				
+			// 		break;
+			// 	case "e":
+				
+			// 		break;
+			// }
+
+			dbClub.close();
+			dbClub2.close();
+		this.flagCargandoDb=false;
+		// try {
+		// 	for(Persona pp : lstPersonas) {
+		// 		if((pp instanceof Profesor) && (((Profesor) pp).getNroLegajo() == nroLegajo)) {
+		// 			profesor = ((Profesor) pp);
+		// 		}
+		// 	}
+		// 	dbClub.println("e,"+evento.getNombre()+","+evento.getDia()+","+evento.getHoraInicio()+","+evento.getHoraFin()+","+evento.getLugar()+","+evento.getArancel()+","+evento.getResponsable());
+		// 	dbClub.close();
+		// 	return true;
+		// }catch(Exception e) {
+		// 	System.out.println(e.getMessage());
+		// }
+		return true;
+	}
 }

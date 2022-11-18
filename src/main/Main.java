@@ -19,7 +19,19 @@ public class Main {
 		List<Socio> lstSocios = new ArrayList<Socio>();
 		int valorCuotaSocio = 5000;
 		int sueldoProfesor = 10000;
-		int arancel = 2000;
+		float arancel = 2000;
+
+		
+		try{
+			System.out.println(" - Buscando DB...");
+			if(sistema.leerDB()){
+				System.out.println(" - Se cargaron datos previos");
+			}else{
+				System.out.println(" - No hay datos previos");
+			};
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 
 		//Declaro variables utilizadas por el menú
 		long dni;
@@ -284,26 +296,6 @@ public class Main {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
-		//carga de datos al archivo txt
-		// try {
-		// 	salida.println(sistema.traerProfesores());
-		// }catch(Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
-		
-		// try {
-		// 	salida.println(sistema.traerDeporte(sistema.traerProfesor(1)));
-		// }catch(Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
-		
-		// try {
-		// 	salida.println(sistema.traerEvento(sistema.traerSocio(2)));
-		// }catch(Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
-		//salida.close();
 	}
 
 }
