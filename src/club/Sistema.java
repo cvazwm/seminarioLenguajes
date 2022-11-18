@@ -555,9 +555,7 @@ public class Sistema {
 			if(v[0].equals("s")){
 				//l[2] contiene el nombre de la supuesta actividad,
 				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Integer.parseInt(v[5]));
-				if( v[2] != null && !v[2].equals("") ){					
-					System.out.println("esta asociado a un deporte");
-					System.out.println(v[2]);
+				if( v[2] != null && !v[2].equals("") ){
 					agregarSocioDeporte(traerSocioDni(Long.parseLong(v[1])),traerDeporte(v[2]));
 				}
 			}
