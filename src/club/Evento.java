@@ -1,15 +1,15 @@
 package club;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.DayOfWeek;
 
 public class Evento extends Actividad {
 	private Persona responsable;
 
 	//Constructor
-	public Evento(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
+	public Evento(String nombre, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
 			 Persona responsable) {
-		super(nombre, fecha, horaInicio, horaFin, lugar, arancel);
+		super(nombre, dia, horaInicio, horaFin, lugar, arancel);
 		this.responsable = responsable;
 	}
 
@@ -24,7 +24,7 @@ public class Evento extends Actividad {
 	//toString
 	@Override
 	public String toString() {
-		return "\n ----- EVENTO ----- \n RESPONSABLE: " + responsable + ", NOMBRE: " + nombre + ", FECHA: " + fecha + ", HORA INICIO: "
+		return "\n ----- EVENTO ----- \n RESPONSABLE: " + responsable + ", NOMBRE: " + nombre + ", DIA DE LA SEMANA: " + dia + ", HORA INICIO: "
 				+ horaInicio + ", HORA FIN: " + horaFin + ", LUGAR: " + lugar + ", ARANCEL: " + arancel + "\n";
 	}
 	

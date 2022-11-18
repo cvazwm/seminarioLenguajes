@@ -2,8 +2,8 @@ package club;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.DayOfWeek;
 
 public class Sistema {
 	private List<Persona> lstPersonas = new ArrayList<Persona>();
@@ -127,10 +127,10 @@ public class Sistema {
 		return lstSocios;
 	}
 	
-	public boolean agregarSocioDeporte(Socio socio, Deporte actividad)throws Exception {
-		if((actividad.getCupo() + 1) > actividad.getLstSocios().size())throw new Exception("ERROR: No hay cupo disponible para la actividad.");
+	public boolean agregarSocioDeporte(Socio socio, Deporte deporte)throws Exception {
+		if((deporte.getCupo() + 1) > deporte.getLstSocios().size())throw new Exception("ERROR: No hay cupo disponible para la actividad.");
 
-		return actividad.agregarSocio(socio);
+		return deporte.agregarSocio(socio);
 	}
 
 	public boolean agregarProfesor(long dni, String nombre, String apellido, float sueldo)throws Exception {
@@ -201,12 +201,12 @@ public class Sistema {
 		return actividad;
 	}
 	
-	public Actividad traerActividad(LocalDate fecha, LocalTime horaInicio, String lugar) {
+	public Actividad traerActividad(DayOfWeek dia, LocalTime horaInicio, String lugar) {
 		Actividad actividad = null;
 		
 		int i = 0;
 		while((i < lstActividades.size()) && (actividad == null)) {
-			if((lstActividades.get(i).getFecha().equals(fecha)) && (lstActividades.get(i).getHoraInicio().equals(horaInicio)) &&
+			if((lstActividades.get(i).getDia().equals(dia)) && (lstActividades.get(i).getHoraInicio().equals(horaInicio)) &&
 					(lstActividades.get(i).getLugar().equals(lugar))) {
 				actividad = lstActividades.get(i);
 			}
@@ -216,11 +216,11 @@ public class Sistema {
 		return actividad;
 	}
 	
-	public List<Actividad> traerActividades(LocalDate fecha){
+	public List<Actividad> traerActividades(DayOfWeek dia){
 		List<Actividad> listActividades = new ArrayList<Actividad>();
 		
 		for(int i = 0; i < lstActividades.size(); i++) {
-			if((lstActividades.get(i).getFecha().equals(fecha))) {
+			if((lstActividades.get(i).getDia().equals(dia))) {
 				listActividades.add(lstActividades.get(i));
 			}
 		}
@@ -238,6 +238,41 @@ public class Sistema {
 		}
 		
 		return deporte;
+	}	
+	
+	public Deporte traerDeporte(String nombre) {
+		Deporte deporte = null;
+		
+		for(Actividad ad : lstActividades) {
+			if((ad instanceof Deporte) && (((Deporte) ad).getNombre().equals(nombre))) {
+				deporte = ((Deporte) ad);
+			}
+		}
+		
+		return deporte;
+	}	
+	
+	public List<Deporte> traerDeportes() {
+		List<Deporte> deportes = new ArrayList<Deporte>();
+		
+		for(Actividad ad : lstActividades) {
+			if(ad instanceof Deporte) {
+				deportes.add((Deporte) ad);
+			}
+		}
+		
+		return deportes;
+	}	
+
+	public boolean existenDeportes() {
+		
+		for(Actividad ad : lstActividades) {
+			if(ad instanceof Deporte) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public Evento traerEvento(Persona responsable) {
@@ -259,24 +294,24 @@ public class Sistema {
 		return lstActividades.remove(actividad);
 	}
 
-	public boolean agregarDeporte(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, 
-			float arancel, Profesor profesor, int cupo)throws Exception {
+	public boolean agregarDeporte(String nombre, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin, String lugar, 
+			float arancel, Profesor profesor, int cupo) {
 		
-		Actividad actividad = traerActividad(fecha, horaInicio, lugar);
-		if(actividad != null)throw new Exception("ERROR: fecha, horario y lugar reservado.");
+		Actividad actividad = traerActividad(dia, horaInicio, lugar);
+		if(actividad != null) return false;
 		
-		Deporte deporte = new Deporte(nombre, fecha, horaInicio, horaFin, lugar, arancel, profesor, cupo);
+		Deporte deporte = new Deporte(nombre, dia, horaInicio, horaFin, lugar, arancel, profesor, cupo);
 		
 		return lstActividades.add(deporte);
 	}
 	
-	public boolean agregarEvento(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, 
+	public boolean agregarEvento(String nombre, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin, String lugar, 
 			float arancel, Persona responsable)throws Exception {
 		
-		Actividad actividad = traerActividad(fecha, horaInicio, lugar);
+		Actividad actividad = traerActividad(dia, horaInicio, lugar);
 		if(actividad != null)throw new Exception("ERROR: fecha, horario y lugar reservado.");
 		
-		Evento evento = new Evento(nombre, fecha, horaInicio, horaFin, lugar, arancel, responsable);
+		Evento evento = new Evento(nombre, dia, horaInicio, horaFin, lugar, arancel, responsable);
 		
 		return lstActividades.add(evento);
 	}

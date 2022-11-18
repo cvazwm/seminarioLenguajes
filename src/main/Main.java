@@ -3,7 +3,9 @@ package main;
 import java.io.*;
 import java.util.*;
 import java.time.LocalTime;
-import java.time.LocalDate;
+import java.time.DayOfWeek;
+
+import club.Actividad;
 import club.Sistema;
 import club.Socio;
 
@@ -14,28 +16,199 @@ public class Main {
 		
 		Sistema sistema = new Sistema();
 		List<Socio> lstSocios = new ArrayList<Socio>();
+		int valorCuotaSocio = 5000;
+		int sueldoProfesor = 10000;
+		int arancel = 2000;
+
+		//Declaro variables utilizadas por el menú
+		int dni,identificador,act,i,diaDSemana,cupo;
+		String nombre,apellido,lugar,inicio,fin;
 		
-		//carga de datos al sistema
-		try {
-			sistema.agregarProfesor(123123, "asd", "qweqew", 50000);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-			
-		try {
-			sistema.agregarDeporte("a", LocalDate.now(), LocalTime.of(12, 0), LocalTime.of(14, 0), "a", 2000, sistema.traerProfesor(1), 4);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
+		//Menú principal
+		Scanner sn = new Scanner(System.in);
+        boolean salir = false;
+        int opcion;
+
+        while (!salir) {
+ 
+            System.out.println("1. Inscribir un Socio");
+            System.out.println("2. Inscribir un Socio a una Actividad Deportiva");
+            System.out.println("3. Agregar profesor y Actividad Deportiva");
+            System.out.println("4. Sustituir por un profesor nuevo a una Actividad Deportiva");
+            System.out.println("5. Mostrar todos los socios");
+            System.out.println("6. Mostrar todos los Profesores");
+            System.out.println("7. Mostrar Actividades Deportivas");
+            System.out.println("8. Salir");
+ 
+            try {
+ 
+                System.out.println("Escribe una de las opciones");
+                opcion = sn.nextInt();
+ 
+                switch (opcion) {
+                    case 1:
+							dni=0;
+							nombre="";
+							apellido="";
+						do{
+							System.out.println("Intrduzca DNI del nuevo Socio:");
+							dni = sn.nextInt();
+							System.out.println("Intrduzca el Nombre:");
+							nombre = sn.next();
+							System.out.println("Intrduzca el Apellido:");
+							apellido = sn.next();
+						}while(String.valueOf(dni).length()!=8||nombre==null||nombre.isEmpty()||apellido==null||apellido.isEmpty());
+						try {
+							lstSocios.add(sistema.traerSocio(sistema.agregarSocio(dni,nombre,apellido,valorCuotaSocio)));
+						}catch(Exception e) {
+							System.out.println(e.getMessage());
+						}
+                        break;
+                    case 2:
+					//comprobar si existe una actividad deportiva
+						String nombreDeporte = "";
+						if( sistema.existenDeportes() ){
+							do{
+								System.out.println("Intrduzca DNI (8 digitos) o Legajo del Socio:");
+								identificador = sn.nextInt();
+							}
+							while (sistema.traerSocioDni(identificador) == null);
+							do{
+								do{
+									System.out.println("Elija una Actividad Deportiva:");
+									i = 0;
+									for (Actividad deporte : sistema.traerDeportes()) {
+										i++;
+										System.out.println(String.valueOf(i) + " - " + deporte.getNombre());
+									}
+									act = sn.nextInt();
+								}while( act > i );
+								i = 0;
+								for (Actividad deporte : sistema.traerDeportes()) {
+									i++;
+									if (i == act)nombreDeporte=deporte.getNombre();
+								}
+							}
+							while (sistema.traerDeporte(nombreDeporte) == null);
+
+							if (String.valueOf(identificador).length() == 8 &&  nombreDeporte != null && !nombreDeporte.isEmpty() ){
+								//Es DNI
+								try{
+									if(sistema.agregarSocioDeporte(sistema.traerSocioDni(identificador),sistema.traerDeporte(nombreDeporte)))
+									System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+									else
+									System.out.println("Hubo un problema al inscribir al socio a la actividad");
+								}catch(Exception e) {
+									System.out.println(e.getMessage());
+								}
+							}else{
+								//Es legajo
+								try{
+									if(sistema.agregarSocioDeporte(sistema.traerSocio(identificador),sistema.traerDeporte(nombreDeporte)))
+									System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+									else
+									System.out.println("Hubo un problema al inscribir al socio a la actividad");
+								}catch(Exception e) {
+									System.out.println(e.getMessage());
+								}
+							}
+						};
+                        break;
+					case 3:
+							dni=0;
+							nombre="";
+							apellido="";
+						do{
+							System.out.println("Intrduzca DNI del nuevo profesor:");
+							dni = sn.nextInt();
+							System.out.println("Intrduzca el Nombre:");
+							nombre = sn.next();
+							System.out.println("Intrduzca el Apellido:");
+							apellido = sn.next();
+						}while(String.valueOf(dni).length()!=8||nombre==null||nombre.isEmpty()||apellido==null||apellido.isEmpty());
+						try {
+							sistema.agregarProfesor(dni, nombre, apellido, sueldoProfesor);
+						}catch(Exception e) {
+							System.out.println(e.getMessage());
+						}
+
+						do{
+							System.out.println("1 - Lunes");
+							System.out.println("2 - Martes");
+							System.out.println("3 - Miercoles");
+							System.out.println("4 - Jueves");
+							System.out.println("5 - Viernes");
+							System.out.println("6 - Sabado");
+							System.out.println("7 - Domingo");
+							System.out.println("Seleccione que día se practicará este deporte:");
+							diaDSemana = sn.nextInt();
+							System.out.println("Intrduzca el nombre del deporte:");
+							nombre = sn.next();
+							System.out.println("Indique el lugar empleado:");
+							lugar = sn.next();
+							System.out.println("Indique el cupo maximo de socios:");
+							cupo = sn.nextInt();
+							System.out.println("Hora de comienzo de actividad (hh:mm):");
+							inicio = sn.next();
+							System.out.println("Hora finalización de actividad (hh:mm):");
+							fin = sn.next();
+						}while(
+							diaDSemana>7 || diaDSemana<1 ||
+							nombre==null || nombre.isEmpty() ||
+							apellido==null || apellido.isEmpty() ||
+							lugar==null || lugar.isEmpty() ||
+							cupo<1 ||
+							inicio.split(":").length==2 ||
+							fin.split(":").length==2
+							);
+						try {
+							if(sistema.agregarDeporte(
+								nombre, 
+								DayOfWeek.of(diaDSemana),
+								LocalTime.of( Integer.parseInt( inicio.split(":")[0] ), Integer.parseInt( inicio.split(":")[1] )), 
+								LocalTime.of( Integer.parseInt( fin.split(":")[0] ), Integer.parseInt( fin.split(":")[1] )), 
+								lugar, 
+								arancel, 
+								sistema.traerProfesorDni(dni), 
+								cupo
+							)) 
+							System.out.println("Se agregó la actividad: " + nombre);
+							else
+							System.out.println("Hubo un problema para agregar la actividad");
+						}catch(Exception e) {
+							System.out.println(e.getMessage());
+						}
+						break;
+					case 4:
+						System.out.println("Has seleccionado la opcion 3");
+						break;
+					case 5:
+						System.out.println("Has seleccionado la opcion 3");
+						break;
+					case 6:
+						System.out.println("Has seleccionado la opcion 3");
+						break;
+					case 7:
+						System.out.println("Has seleccionado la opcion 3");
+						break;
+					case 8:
+						System.out.println("Has seleccionado la opcion 3");
+						break;
+                    case 9:
+                        salir = true;
+                        break;
+                    default:
+                        System.out.println("Solo números entre 1 y 9");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Debes insertar un número");
+                sn.next();
+            }
+        }
+
 		//Opcional
 		try {
-			lstSocios.add(sistema.traerSocio(sistema.agregarSocio(321, "qwe", "wer", 5000)));
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		//Opcional
-		try {
-			sistema.agregarEvento("b", LocalDate.now(), LocalTime.of(13, 0), LocalTime.of(15, 0), "b", 1000, sistema.traerSocio(2));
+			//sistema.agregarEvento("b", LocalDate.now(), LocalTime.of(13, 0), LocalTime.of(15, 0), "b", 1000, sistema.traerSocio(2));
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

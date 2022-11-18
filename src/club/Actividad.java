@@ -1,23 +1,23 @@
 package club;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.DayOfWeek;
 
 public abstract class Actividad {
 	protected int id;
 	protected String nombre;
-	protected LocalDate fecha;
+	protected DayOfWeek dia;
 	protected LocalTime horaInicio;
 	protected LocalTime horaFin;
 	protected String lugar;
 	protected float arancel;
 	
 	//Constructor
-	public Actividad(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar,
+	public Actividad(String nombre, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin, String lugar,
 			float arancel) {
 		super();
 		this.nombre = nombre;
-		this.fecha = fecha;
+		this.dia = dia;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
 		this.lugar = lugar;
@@ -39,11 +39,11 @@ public abstract class Actividad {
 		this.nombre = nombre;
 	}
 
-	public LocalDate getFecha() {
-		return fecha;
+	public DayOfWeek getDia() {
+		return dia;
 	}
-	public void setFecha(LocalDate fecha) {
-		this.fecha = fecha;
+	public void setDia(DayOfWeek dia) {
+		this.dia = dia;
 	}
 
 	public LocalTime getHoraInicio() {
@@ -77,7 +77,7 @@ public abstract class Actividad {
 	//toString
 	@Override
 	public String toString() {
-		return "ID: " + id + ", NOMBRE: " + nombre + ", FECHA: " + fecha + ", HORA INICIO: " + horaInicio + ", HORA FIN: " + horaFin
+		return "ID: " + id + ", NOMBRE: " + nombre + ", DIA DE LA SEMANA: " + dia + ", HORA INICIO: " + horaInicio + ", HORA FIN: " + horaFin
 				+ ", LUGAR: " + lugar + ", ARANCEL: " + arancel + "\n";
 	}
 	

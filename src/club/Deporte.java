@@ -3,6 +3,7 @@ package club;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 public class Deporte extends Actividad {
@@ -11,7 +12,7 @@ public class Deporte extends Actividad {
 	private List<Socio> lstSocios = new ArrayList<Socio>();
 	
 	//Constructor
-	public Deporte(String nombre, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
+	public Deporte(String nombre, DayOfWeek fecha, LocalTime horaInicio, LocalTime horaFin, String lugar, float arancel, 
 			 Profesor profesor, int cupo) {
 		super(nombre, fecha, horaInicio, horaFin, lugar, arancel);
 		this.profesor = profesor;
@@ -49,7 +50,7 @@ public class Deporte extends Actividad {
 	//toString
 	@Override
 	public String toString() {
-		return "\n ----- DEPORTE ----- \n PROFESOR:  " + profesor + ", CUPOS: " + cupo + ", LISTA SOCIOS: " + lstSocios + ", NOMBRE: " + nombre + ", FECHA: " + fecha
+		return "\n ----- DEPORTE ----- \n PROFESOR:  " + profesor + ", CUPOS: " + cupo + ", LISTA SOCIOS: " + lstSocios + ", NOMBRE: " + nombre + ", DIA DE LA SEMANA: " + dia
 				+ ", HORA INICIO: " + horaInicio + ", HORA FIN:" + horaFin + ", LUGAR: " + lugar + ", ARANCEL: " + arancel
 				+ "\n";
 	}
