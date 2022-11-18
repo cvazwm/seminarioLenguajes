@@ -23,8 +23,13 @@ public class Deporte extends Actividad {
 	public Profesor getProfesor() {
 		return this.profesor;
 	}
-	public void setProfesor(Profesor profesor) {
+	public boolean setProfesor(Profesor profesor) {
 		this.profesor = profesor;
+
+		if (this.profesor.equals(profesor))
+		return true;
+		else
+		return false;
 	}
 	
 	public int getCupo() {

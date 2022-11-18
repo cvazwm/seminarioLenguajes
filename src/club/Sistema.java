@@ -180,6 +180,16 @@ public class Sistema {
 		return lstPersonas.remove(profesor);
 	}
 	
+	public boolean reemplazarProfesor(Deporte deporte, Profesor profesor) {
+		try{
+			eliminarProfesor(deporte.getProfesor().getNroLegajo());
+			return deporte.setProfesor(profesor);			
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
 	public boolean eliminarSocio(int carnet)throws Exception {
 		Socio socio = traerSocio(carnet);
 		if(socio == null)throw new Exception("ERROR: socio no esta en la lista.");
