@@ -13,7 +13,7 @@ import club.Socio;
 public class Main {
 
 	public static void main(String[] args)throws IOException {
-		PrintWriter salida = new PrintWriter(new FileWriter("BaseDeDatos.txt"));
+		//PrintWriter salida = new PrintWriter(new FileWriter("BaseDeDatos.txt"));
 		
 		Sistema sistema = new Sistema();
 		List<Socio> lstSocios = new ArrayList<Socio>();
@@ -32,7 +32,8 @@ public class Main {
         int opcion;
 
         while (!salir) {
- 
+            System.out.println("");
+            System.out.println("-----------------MENU PRINCIPAL-----------------");
             System.out.println("1. Inscribir un Socio");
             System.out.println("2. Inscribir un Socio a una Actividad Deportiva");
             System.out.println("3. Agregar profesor y Actividad Deportiva");
@@ -44,7 +45,8 @@ public class Main {
  
             try {
  
-                System.out.println("Escribe una de las opciones");
+				System.out.println("");
+                System.out.println(" > Escribe una de las opciones");
                 opcion = sn.nextInt();
  
                 switch (opcion) {
@@ -71,13 +73,15 @@ public class Main {
 						nombreDeporte = "";
 						if( sistema.existenDeportes() ){
 							do{
-								System.out.println("Intrduzca DNI (8 digitos) o Legajo del Socio:");
+									System.out.println("");
+									System.out.println(" > Intrduzca DNI (8 digitos) o Legajo del Socio:");
 								identificador = sn.nextInt();
 							}
 							while (sistema.traerSocioDni(identificador) == null);
 							do{
 								do{
-									System.out.println("Elija una Actividad Deportiva:");
+										System.out.println("");
+											System.out.println(" > Elija una Actividad Deportiva:");
 									i = 0;
 									for (Actividad deporte : sistema.traerDeportes()) {
 										i++;
@@ -97,9 +101,9 @@ public class Main {
 								//Es DNI
 								try{
 									if(sistema.agregarSocioDeporte(sistema.traerSocioDni(identificador),sistema.traerDeporte(nombreDeporte))){
-										System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+										System.out.println(" > Socio inscripto con exito a "+ nombreDeporte);
 									}else{
-										System.out.println("Hubo un problema al inscribir al socio a la actividad");
+										System.out.println(" > Hubo un problema al inscribir al socio a la actividad");
 									}
 								}catch(Exception e) {
 									System.out.println(e.getMessage());
@@ -108,16 +112,16 @@ public class Main {
 								//Es legajo
 								try{
 									if(sistema.agregarSocioDeporte(sistema.traerSocio(identificador),sistema.traerDeporte(nombreDeporte))){
-										System.out.println("Socio inscripto con exito a "+ nombreDeporte);
+										System.out.println(" > Socio inscripto con exito a "+ nombreDeporte);
 									}else{
-										System.out.println("Hubo un problema al inscribir al socio a la actividad");
+										System.out.println(" > Hubo un problema al inscribir al socio a la actividad");
 									}
 								}catch(Exception e) {
 									System.out.println(e.getMessage());
 								}
 							}
 						}else{
-							System.out.println("No existe ninguna actividad deportiva, agregar una primero.");
+							System.out.println(" > No existe ninguna actividad deportiva, agregar una primero.");
 						};
                         break;
 					case 3:
@@ -125,7 +129,8 @@ public class Main {
 						nombre="";
 						apellido="";
 						do{
-							System.out.println("Intrduzca DNI del nuevo profesor:");
+							System.out.println("");
+							System.out.println(" > Intrduzca DNI del nuevo profesor:");
 							dni = sn.nextInt();
 							System.out.println("Intrduzca el Nombre:");
 							nombre = sn.next();
@@ -139,6 +144,7 @@ public class Main {
 						}
 
 						do{
+							System.out.println("");
 							System.out.println("1 - Lunes");
 							System.out.println("2 - Martes");
 							System.out.println("3 - Miercoles");
@@ -146,7 +152,7 @@ public class Main {
 							System.out.println("5 - Viernes");
 							System.out.println("6 - Sabado");
 							System.out.println("7 - Domingo");
-							System.out.println("Seleccione que día se practicará este deporte:");
+							System.out.println(" > Seleccione que día se practicará este deporte:");
 							diaDSemana = sn.nextInt();
 							System.out.println("Intrduzca el nombre del deporte:");
 							nombre = sn.next();
@@ -178,11 +184,11 @@ public class Main {
 								sistema.traerProfesorDni(dni), 
 								cupo
 							)){
-							System.out.println("Se agregó la actividad: " + nombre);
+							System.out.println(" > Se agregó la actividad: " + nombre);
 							}else{
 							//si la actividad no se crea, el profesor recien creado se borra, sino queda huerfano, acumula basura.
 							sistema.eliminarProfesor(sistema.traerProfesorDni(dni).getNroLegajo());
-							System.out.println("Hubo un problema para agregar la actividad");
+							System.out.println(" > Hubo un problema para agregar la actividad");
 							}
 						}catch(Exception e) {
 							System.out.println(e.getMessage());
@@ -195,7 +201,8 @@ public class Main {
 							nombre="";
 							apellido="";
 							do{
-								System.out.println("Intrduzca DNI del nuevo profesor:");
+								System.out.println("");
+									System.out.println(" > Intrduzca DNI del nuevo profesor:");
 								dni = sn.nextInt();
 								System.out.println("Intrduzca el Nombre:");
 								nombre = sn.next();
@@ -210,7 +217,8 @@ public class Main {
 
 							do{
 								do{
-									System.out.println("Elija una Actividad Deportiva:");
+										System.out.println("");
+										System.out.println(" > Elija una Actividad Deportiva:");
 									i = 0;
 									for (Actividad deporte : sistema.traerDeportes()) {
 										i++;
@@ -228,26 +236,32 @@ public class Main {
 
 							//Sustituyo el profesor
 							if(sistema.reemplazarProfesor(sistema.traerDeporte(nombreDeporte),sistema.traerProfesorDni(dni))){
-								System.out.println("Se actualizó el profesor para " + nombreDeporte);
+								System.out.println(" > Se actualizó el profesor para " + nombreDeporte);
 							}else{
-								System.out.println("Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
+								System.out.println(" > Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
 							}
 
 						}else{
-							System.out.println("No existe ninguna actividad deportiva, agregar una primero.");
+							System.out.println(" > No existe ninguna actividad deportiva, agregar una primero.");
 						};
 						break;
 					case 5:
+						System.out.println("");
+						System.out.println("-----------------LISTADO DE SOCIOS-----------------");
 						for (Persona socio : sistema.traerSocios()) {
 							System.out.println(socio);
 						}
 						break;
 					case 6:
+						System.out.println("");
+						System.out.println("---------------LISTADO DE PROFESORES---------------");
 						for (Persona profesor : sistema.traerProfesores()) {
 							System.out.println(profesor);
 						}
 						break;
 					case 7:
+						System.out.println("");
+						System.out.println("------------LISTADO DE ACTIVIDADES DEP.------------");
 						for (Actividad deporte : sistema.traerDeportes()) {
 							System.out.println(deporte);
 						}
@@ -256,10 +270,10 @@ public class Main {
                         salir = true;
                         break;
                     default:
-                        System.out.println("Solo números entre 1 y 9");
+                        System.out.println(" > Solo números entre 1 y 9 !!");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Debes insertar un número");
+                System.out.println(" > Debes insertar un número");
                 sn.next();
             }
         }
@@ -289,7 +303,7 @@ public class Main {
 		// }catch(Exception e) {
 		// 	System.out.println(e.getMessage());
 		// }
-		salida.close();
+		//salida.close();
 	}
 
 }
