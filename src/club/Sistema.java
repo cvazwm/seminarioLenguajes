@@ -128,7 +128,9 @@ public class Sistema {
 	}
 	
 	public boolean agregarSocioDeporte(Socio socio, Deporte deporte)throws Exception {
-		if((deporte.getCupo() + 1) > deporte.getLstSocios().size())throw new Exception("ERROR: No hay cupo disponible para la actividad.");
+		System.out.println(deporte.getCupo() + 1);
+		System.out.println(deporte.getLstSocios().size());
+		if(deporte.getCupo() == deporte.getLstSocios().size() + 1 )throw new Exception("ERROR: No hay cupo disponible para la actividad.");
 
 		return deporte.agregarSocio(socio);
 	}
