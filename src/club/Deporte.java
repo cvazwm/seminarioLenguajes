@@ -1,7 +1,6 @@
 package club;
 
 import java.util.List;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
