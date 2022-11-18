@@ -55,9 +55,13 @@ public class Deporte extends Actividad {
 	//toString
 	@Override
 	public String toString() {
-		return "\n ----- DEPORTE ----- \n PROFESOR:  " + profesor + ", CUPOS: " + cupo + ", LISTA SOCIOS: " + lstSocios + ", NOMBRE: " + nombre + ", DIA DE LA SEMANA: " + dia
-				+ ", HORA INICIO: " + horaInicio + ", HORA FIN:" + horaFin + ", LUGAR: " + lugar + ", ARANCEL: " + arancel
-				+ "\n";
+		return " \n  NOMBRE: " + nombre + ", DIA DE LA SEMANA: " + dia
+				+ ", HORA INICIO: " + horaInicio + ", HORA FIN:" + horaFin 
+				+ ", LUGAR: " + lugar + ", ARANCEL: " + arancel + ", CUPOS: " + cupo + " \n"
+				+ "        PROFESOR:  " + profesor.getNombre() 
+				+ " \n" 
+				+ "        LISTA SOCIOS:\n " 
+				+ "                     "+lstSocios + " \n";
 	}
 	
 	//Metodos
