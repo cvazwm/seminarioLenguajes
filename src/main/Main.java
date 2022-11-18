@@ -13,7 +13,6 @@ import club.Socio;
 public class Main {
 
 	public static void main(String[] args)throws IOException {
-		//PrintWriter salida = new PrintWriter(new FileWriter("BaseDeDatos.txt"));
 		
 		Sistema sistema = new Sistema();
 		List<Socio> lstSocios = new ArrayList<Socio>();
@@ -37,9 +36,10 @@ public class Main {
 		long dni;
 		int identificador,act,i,diaDSemana,cupo;
 		String nombre,apellido,lugar,inicio,fin,nombreDeporte;
-		
-		try (//Menú principal
-		Scanner sn = new Scanner(System.in)) {
+
+		//Menú principal
+		try{
+			Scanner sn = new Scanner(System.in);
 			boolean salir = false;
 			int opcion;
 
@@ -245,12 +245,15 @@ public class Main {
 									}
 								}
 								while (sistema.traerDeporte(nombreDeporte) == null);
-
 								//Sustituyo el profesor
-								if(sistema.reemplazarProfesor(sistema.traerDeporte(nombreDeporte),sistema.traerProfesorDni(dni))){
-									System.out.println(" > Se actualizó el profesor para " + nombreDeporte);
-								}else{
-									System.out.println(" > Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
+								try{
+									if(sistema.reemplazarProfesor(sistema.traerDeporte(nombreDeporte),sistema.traerProfesorDni(dni))){
+										System.out.println(" > Se actualizó el profesor para " + nombreDeporte);
+									}else{
+										System.out.println(" > Hubo un problema al intentar actualizar el profesor de la actividad " + nombreDeporte);
+									}
+								}catch(Exception e) {
+									System.out.println(e.getMessage());
 								}
 
 							}else{
@@ -289,6 +292,8 @@ public class Main {
 			        sn.next();
 			    }
 			}
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
         //Opcional
 		try {

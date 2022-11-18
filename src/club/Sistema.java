@@ -1,11 +1,14 @@
 package club;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.time.LocalTime;
-import java.io.*;
-import java.time.DayOfWeek;
 
 public class Sistema {
 	private List<Persona> lstPersonas = new ArrayList<Persona>();
@@ -209,20 +212,59 @@ public class Sistema {
 		return lstPersonas.remove(persona);
 	}
 	
-	public boolean eliminarProfesor(int nroLegajo)throws Exception {
+	public boolean eliminarProfesor(int nroLegajo) {
 		Profesor profesor = traerProfesor(nroLegajo);
-		if(profesor == null)throw new Exception("ERROR: profesor no esta en la lista.");
+		if(profesor == null);
 		
-		return lstPersonas.remove(profesor);
-	}
-	
-	public boolean reemplazarProfesor(Deporte deporte, Profesor profesor) {
-		try{
-			eliminarProfesor(deporte.getProfesor().getNroLegajo());
-			return deporte.setProfesor(profesor);			
+		try {
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				try
+				{
+					if( Integer.parseInt(l.split(",")[4]) > nroLegajo || Integer.parseInt(l.split(",")[4]) < nroLegajo){
+						inputBuffer.append(l);
+						inputBuffer.append('\n');
+					}
+				} catch (NumberFormatException ex)
+				{
+					inputBuffer.append(l);
+					inputBuffer.append('\n');
+				}
+				
+			}
+			dbClub.close();
+			String dbStr = inputBuffer.toString();
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+
+		return lstPersonas.remove(profesor);
+	}
+	
+	public boolean reemplazarProfesor(Deporte deporte, Profesor profesor)throws Exception  {
+		try{
+			eliminarProfesor(deporte.getProfesor().getNroLegajo());
+
+			deporte.setProfesor(profesor);
+
+			if(this.flagCargandoDb==false){
+				if(!updateDBActividades(deporte)){
+					System.out.println("Hubo un problema al intentar escribir la base de datos");
+				}
+			}
+
+			return true;	
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
 		return false;
 	}
 	
@@ -457,8 +499,10 @@ public class Sistema {
 			String l;
 			//cargo archivo en buffer para sobreescribir la linea
 			while ((l = dbClub.readLine()) != null) {
-				inputBuffer.append(l);
-				inputBuffer.append('\n');
+				if(!l.split(",")[1].equals(deporte.getNombre())){
+					inputBuffer.append(l);
+					inputBuffer.append('\n');
+				}
 			}
 			inputBuffer.append("d,"+deporte.getNombre()+","+deporte.getDia()+","+deporte.getHoraInicio()+","+deporte.getHoraFin()+","+deporte.getLugar()+","+deporte.getArancel()+","+deporte.getProfesor().getNroLegajo()+","+deporte.getCupo()+"\n");
 			dbClub.close();
@@ -502,66 +546,53 @@ public class Sistema {
 
 	public boolean leerDB() throws Exception {
 		this.flagCargandoDb=true;
-		File file = new File("club.db");  
-		String l,l2;
-		String[] v,v2;
 		
-		
-		Scanner dbClub3 = new Scanner(file);
-		Scanner dbClub4 = new Scanner(file);
-		
-		//leo linea por linea el archivo cargo profesor y actividad deportiva
-		while(dbClub3.hasNext()){
-			//separo quitando las ,
-			l = dbClub3.nextLine();
-			v = l.split(",");
-			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
-			if(v[0].equals("d")){
-				while(dbClub4.hasNext()){
-					l2 = dbClub4.nextLine();
-					v2 = l2.split(",");
-					//si es un profesor y coinciden ambos legajos con la actividad, cargo el profesor, y luego busco el objeto profesor.
-					if(v2[0].equals("p") && Integer.parseInt(v2[4]) == Integer.parseInt(v[7])){
-						agregarProfesor(Long.parseLong(v2[1]), v2[2], v2[3], Float.parseFloat(v2[5]), Integer.parseInt(v2[4]));
-					}
-				}
-
-				agregarDeporte(
-					v[1],
-					DayOfWeek.valueOf(v[2]),
-					LocalTime.of(Integer.parseInt(v[3].split(":")[0]), Integer.parseInt( v[3].split(":")[1] )), 
-					LocalTime.of(Integer.parseInt(v[4].split(":")[0]), Integer.parseInt( v[4].split(":")[1] )),
-					v[5], 
-					Float.parseFloat(v[6]),
-					traerProfesor(Integer.parseInt(v[7])), 
-					Integer.parseInt(v[8])
-				);
-			}
-		}
-		
-		dbClub3.close();
-		dbClub4.close();
-
-		Scanner dbClub = new Scanner(file);
-		Scanner dbClub2 = new Scanner(file);
-		//leo linea por linea el archivo cargo solo socios
-		
-		while(dbClub.hasNext()){
-
-			//separo quitando las ,
-			l = dbClub.nextLine();
-			v = l.split(",");
-			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
-			if(v[0].equals("s")){
-				//l[2] contiene el nombre de la supuesta actividad,
-				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Float.parseFloat(v[6]),Integer.parseInt(v[5]));
-				if( v[2] != null && !v[2].equals("") ){
-					agregarSocioDeporte(traerSocioDni(Long.parseLong(v[1])),traerDeporte(v[2]));
-				}
-			}
+		BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+		StringBuffer inputBuffer = new StringBuffer();
+		String l3;
+		//cargo archivo en buffer para sobreescribir la linea
+		while ((l3 = dbClub.readLine()) != null) {
+			inputBuffer.append(l3);
+			inputBuffer.append('\n');
 		}
 		dbClub.close();
-		dbClub2.close();
+		String dbStr = inputBuffer.toString();
+		String lines[] = dbStr.split("\\r?\\n");
+		String ii[],jj[];
+
+		for(String i : lines) {
+			ii=i.split(",");
+			if(ii[0].equals("d")){
+				for(String j : lines) {
+					jj=j.split(",");
+					if(jj[0].equals("p") && Integer.parseInt(jj[4]) == Integer.parseInt(ii[7])){
+						agregarProfesor(Long.parseLong(jj[1]), jj[2], jj[3], Float.parseFloat(jj[5]), Integer.parseInt(jj[4]));
+
+						agregarDeporte(
+							ii[1],
+							DayOfWeek.valueOf(ii[2]),
+							LocalTime.of(Integer.parseInt(ii[3].split(":")[0]), Integer.parseInt( ii[3].split(":")[1] )), 
+							LocalTime.of(Integer.parseInt(ii[4].split(":")[0]), Integer.parseInt( ii[4].split(":")[1] )),
+							ii[5], 
+							Float.parseFloat(ii[6]),
+							traerProfesor(Integer.parseInt(ii[7])), 
+							Integer.parseInt(ii[8])
+						);
+					}
+				}
+			}
+		}
+
+		for(String i : lines) {
+			ii=i.split(",");
+			if(ii[0].equals("s")){
+				//l[2] contiene el nombre de la supuesta actividad,
+				agregarSocio(Long.parseLong(ii[1]), ii[3], ii[4], Float.parseFloat(ii[6]),Integer.parseInt(ii[5]));
+				if( ii[2] != null && !ii[2].equals("") ){
+					agregarSocioDeporte(traerSocioDni(Long.parseLong(ii[1])),traerDeporte(ii[2]));
+				}
+			}
+		}
 
 		this.flagCargandoDb=false;
 		return true;
