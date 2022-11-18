@@ -400,7 +400,6 @@ public class Sistema {
 				inputBuffer.append(l);
 				inputBuffer.append('\n');
 			}
-			System.out.println("grabando socio");
 			inputBuffer.append("s,"+socio.getDni()+",,"+socio.getNombre()+","+socio.getApellido()+","+socio.getCarnet()+","+socio.getCuota()+"\n");
 			dbClub.close();
 			String dbStr = inputBuffer.toString();
@@ -506,15 +505,11 @@ public class Sistema {
 			v = l.split(",");
 			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
 			if(v[0].equals("d")){
-				
-				System.out.println("encontre un deporte");
 				while(dbClub4.hasNext()){
 					l2 = dbClub4.nextLine();
 					v2 = l2.split(",");
 					//si es un profesor y coinciden ambos legajos con la actividad, cargo el profesor, y luego busco el objeto profesor.
 					if(v2[0].equals("p") && Integer.parseInt(v2[4]) == Integer.parseInt(v[7])){
-						
-						System.out.println("encontre un profesor");
 						agregarProfesor(Long.parseLong(v2[1]), v2[2], v2[3], Float.parseFloat(v2[5]), Integer.parseInt(v2[4]));
 					}
 				}
@@ -546,7 +541,6 @@ public class Sistema {
 			v = l.split(",");
 			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
 			if(v[0].equals("s")){
-				System.out.println("encontre un socio");
 				//l[2] contiene el nombre de la supuesta actividad,
 				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Integer.parseInt(v[5]));
 				if( v[2] != null && !v[2].equals("") ){					
@@ -556,38 +550,10 @@ public class Sistema {
 				}
 			}
 		}
-		
 		dbClub.close();
 		dbClub2.close();
-
-			// switch (linea[0]) {
-			// 	case "p":
-					
-			// 		break;
-			// 	case "s":
-				
-			// 		break;
-			// 	case "d":
-				
-			// 		break;
-			// 	case "e":
-				
-			// 		break;
-			// }
-
+		
 		this.flagCargandoDb=false;
-		// try {
-		// 	for(Persona pp : lstPersonas) {
-		// 		if((pp instanceof Profesor) && (((Profesor) pp).getNroLegajo() == nroLegajo)) {
-		// 			profesor = ((Profesor) pp);
-		// 		}
-		// 	}
-		// 	dbClub.println("e,"+evento.getNombre()+","+evento.getDia()+","+evento.getHoraInicio()+","+evento.getHoraFin()+","+evento.getLugar()+","+evento.getArancel()+","+evento.getResponsable());
-		// 	dbClub.close();
-		// 	return true;
-		// }catch(Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
 		return true;
 	}
 }
