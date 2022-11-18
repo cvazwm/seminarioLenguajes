@@ -28,8 +28,8 @@ public class Profesor extends Persona {
 
 	@Override
 	public String toString() {
-		return "\n ----- Profesor ----- \n LEGAJO: " + nroLegajo + ", SUELDO: " + sueldo + ", DNI: " + dni + ", NOMBRE: " + nombre
-				+ ", APELLIDO: " + apellido + "\n";
+		return "\n LEGAJO: " + nroLegajo + ", SUELDO: " + sueldo + ", DNI: " + dni + ", NOMBRE: " + nombre
+				+ ", APELLIDO: " + apellido;
 	}
 	
 	

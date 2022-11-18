@@ -29,8 +29,8 @@ public class Socio extends Persona {
 	//toString
 	@Override
 	public String toString() {
-		return "\n ----- SOCIO ----- \n CARNET: " + carnet + ", CUOTA: " + cuota + ", DNI: " + dni + ", NOMBRE: " + nombre
-				+ ", APELLIDO: " + apellido + "\n";
+		return "\n CARNET: " + carnet + ", CUOTA: " + cuota + ", DNI: " + dni + ", NOMBRE: " + nombre
+				+ ", APELLIDO: " + apellido;
 	}
 	
 }

@@ -89,7 +89,7 @@ public class Main {
 									System.out.println(" > Intrduzca DNI (8 digitos) o Legajo del Socio:");
 								identificador = sn.nextInt();
 							}
-							while (sistema.traerSocioDni(identificador) == null);
+							while (sistema.traerSocioDni(identificador) == null && sistema.traerSocio(identificador) == null);
 							do{
 								do{
 										System.out.println("");

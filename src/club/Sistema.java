@@ -131,8 +131,6 @@ public class Sistema {
 	}
 	
 	public boolean agregarSocioDeporte(Socio socio, Deporte deporte)throws Exception {
-		System.out.println(deporte.getCupo() + 1);
-		System.out.println(deporte.getLstSocios().size());
 		if(deporte.getCupo() == deporte.getLstSocios().size() + 1 )throw new Exception("ERROR: No hay cupo disponible para la actividad.");
 
 		//Lo mando al archivo si es que no estoy cargando una DB anterior
@@ -393,10 +391,23 @@ public class Sistema {
 	}
 	
 	public boolean updateDBPersonas(Socio socio)throws Exception {
-		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
 		try {
-			dbClub.println("s,"+socio.getDni()+",\"\","+socio.getNombre()+","+socio.getApellido()+","+socio.getCarnet()+","+socio.getCuota());
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				inputBuffer.append(l);
+				inputBuffer.append('\n');
+			}
+			System.out.println("grabando socio");
+			inputBuffer.append("s,"+socio.getDni()+",,"+socio.getNombre()+","+socio.getApellido()+","+socio.getCarnet()+","+socio.getCuota()+"\n");
 			dbClub.close();
+			String dbStr = inputBuffer.toString();
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
 			return true;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -416,7 +427,7 @@ public class Sistema {
 			}
 			dbClub.close();
 			String dbStr = inputBuffer.toString();
-			dbStr = dbStr.replace("s,"+socio.getDni()+",\"\",", "s,"+socio.getDni()+","+ deporte.getNombre() +",");
+			dbStr = dbStr.replace("s,"+socio.getDni()+",,", "s,"+socio.getDni()+","+ deporte.getNombre() +",");
 
 			FileOutputStream dbClub2 = new FileOutputStream("club.db");
 			dbClub2.write(dbStr.getBytes());
@@ -429,10 +440,22 @@ public class Sistema {
 	}
 
 	public boolean updateDBActividades(Deporte deporte)throws Exception {
-		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
 		try {
-			dbClub.println("d,"+deporte.getNombre()+","+deporte.getDia()+","+deporte.getHoraInicio()+","+deporte.getHoraFin()+","+deporte.getLugar()+","+deporte.getArancel()+","+deporte.getProfesor().getNroLegajo()+","+deporte.getCupo());
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				inputBuffer.append(l);
+				inputBuffer.append('\n');
+			}
+			inputBuffer.append("d,"+deporte.getNombre()+","+deporte.getDia()+","+deporte.getHoraInicio()+","+deporte.getHoraFin()+","+deporte.getLugar()+","+deporte.getArancel()+","+deporte.getProfesor().getNroLegajo()+","+deporte.getCupo()+"\n");
 			dbClub.close();
+			String dbStr = inputBuffer.toString();
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
 			return true;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -441,10 +464,22 @@ public class Sistema {
 	}
 
 	public boolean updateDBActividades(Evento evento)throws Exception {
-		PrintWriter dbClub = new PrintWriter(new FileWriter("club.db"));
 		try {
-			dbClub.println("e,"+evento.getNombre()+","+evento.getDia()+","+evento.getHoraInicio()+","+evento.getHoraFin()+","+evento.getLugar()+","+evento.getArancel()+","+evento.getResponsable());
+			BufferedReader dbClub = new BufferedReader(new FileReader("club.db"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String l;
+			//cargo archivo en buffer para sobreescribir la linea
+			while ((l = dbClub.readLine()) != null) {
+				inputBuffer.append(l);
+				inputBuffer.append('\n');
+			}
+			inputBuffer.append("e,"+evento.getNombre()+","+evento.getDia()+","+evento.getHoraInicio()+","+evento.getHoraFin()+","+evento.getLugar()+","+evento.getArancel()+","+evento.getResponsable()+"\n");
 			dbClub.close();
+			String dbStr = inputBuffer.toString();
+
+			FileOutputStream dbClub2 = new FileOutputStream("club.db");
+			dbClub2.write(dbStr.getBytes());
+			dbClub2.close();
 			return true;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -456,50 +491,74 @@ public class Sistema {
 
 	public boolean leerDB() throws Exception {
 		this.flagCargandoDb=true;
-		Scanner dbClub = new Scanner("club.db");
-		Scanner dbClub2 = new Scanner("club.db");
-		String[] l,l2;
-		//leo linea por linea el archivo cargo solo socios
-		while(dbClub.hasNext()){
-			//separo quitando las ,
-			l = dbClub.nextLine().split(",");
-			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
-			if(l[0].equals("s")){
-				//l[2] contiene el nombre de la supuesta actividad,
-				agregarSocio(Long.parseLong(l[1]), l[3], l[4], Integer.parseInt(l[5]));
-				if(l[2] != null && !l[2].isEmpty()){
-					agregarSocioDeporte(traerSocioDni(Long.parseLong(l[1])),traerDeporte(l[2]));
-				}
-			}
-		}
+		File file = new File("club.db");  
+		String l,l2;
+		String[] v,v2;
+		
+		
+		Scanner dbClub3 = new Scanner(file);
+		Scanner dbClub4 = new Scanner(file);
 		
 		//leo linea por linea el archivo cargo profesor y actividad deportiva
-		while(dbClub.hasNext()){
+		while(dbClub3.hasNext()){
 			//separo quitando las ,
-			l = dbClub.nextLine().split(",");
+			l = dbClub3.nextLine();
+			v = l.split(",");
 			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
-			if(l[0].equals("d")){
+			if(v[0].equals("d")){
 				
-				while(dbClub2.hasNext()){
-					l2 = dbClub2.nextLine().split(",");
+				System.out.println("encontre un deporte");
+				while(dbClub4.hasNext()){
+					l2 = dbClub4.nextLine();
+					v2 = l2.split(",");
 					//si es un profesor y coinciden ambos legajos con la actividad, cargo el profesor, y luego busco el objeto profesor.
-					if(l2[0].equals("p") && Integer.parseInt(l2[4]) == Integer.parseInt(l[7])){
-						agregarProfesor(Long.parseLong(l2[1]), l2[2], l2[3], Float.parseFloat(l2[5]), Integer.parseInt(l2[4]));
+					if(v2[0].equals("p") && Integer.parseInt(v2[4]) == Integer.parseInt(v[7])){
+						
+						System.out.println("encontre un profesor");
+						agregarProfesor(Long.parseLong(v2[1]), v2[2], v2[3], Float.parseFloat(v2[5]), Integer.parseInt(v2[4]));
 					}
 				}
 
 				agregarDeporte(
-					l[1],
-					DayOfWeek.of(Integer.parseInt(l[2])),
-					LocalTime.of(Integer.parseInt(l[3].split(":")[0]), Integer.parseInt( l[3].split(":")[1] )), 
-					LocalTime.of(Integer.parseInt(l[4].split(":")[0]), Integer.parseInt( l[4].split(":")[1] )),
-					l[5], 
-					Float.parseFloat(l[6]),
-					traerProfesor(Integer.parseInt(l[7])), 
-					Integer.parseInt(l[8])
+					v[1],
+					DayOfWeek.valueOf(v[2]),
+					LocalTime.of(Integer.parseInt(v[3].split(":")[0]), Integer.parseInt( v[3].split(":")[1] )), 
+					LocalTime.of(Integer.parseInt(v[4].split(":")[0]), Integer.parseInt( v[4].split(":")[1] )),
+					v[5], 
+					Float.parseFloat(v[6]),
+					traerProfesor(Integer.parseInt(v[7])), 
+					Integer.parseInt(v[8])
 				);
 			}
 		}
+		
+		dbClub3.close();
+		dbClub4.close();
+
+		Scanner dbClub = new Scanner(file);
+		Scanner dbClub2 = new Scanner(file);
+		//leo linea por linea el archivo cargo solo socios
+		
+		while(dbClub.hasNext()){
+
+			//separo quitando las ,
+			l = dbClub.nextLine();
+			v = l.split(",");
+			//si el primer campo es p es un profesor, s un socio, d un deporte, e un evento
+			if(v[0].equals("s")){
+				System.out.println("encontre un socio");
+				//l[2] contiene el nombre de la supuesta actividad,
+				agregarSocio(Long.parseLong(v[1]), v[3], v[4], Integer.parseInt(v[5]));
+				if( v[2] != null && !v[2].equals("") ){					
+					System.out.println("esta asociado a un deporte");
+					System.out.println(v[2]);
+					agregarSocioDeporte(traerSocioDni(Long.parseLong(v[1])),traerDeporte(v[2]));
+				}
+			}
+		}
+		
+		dbClub.close();
+		dbClub2.close();
 
 			// switch (linea[0]) {
 			// 	case "p":
@@ -516,8 +575,6 @@ public class Sistema {
 			// 		break;
 			// }
 
-			dbClub.close();
-			dbClub2.close();
 		this.flagCargandoDb=false;
 		// try {
 		// 	for(Persona pp : lstPersonas) {
